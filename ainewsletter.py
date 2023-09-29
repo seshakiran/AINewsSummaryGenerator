@@ -11,6 +11,31 @@ from langchain.docstore.document import Document
 from langchain.chains.summarize import load_summarize_chain
 
 
+class printMDTable:
+    def generate_markdown_table(articles):
+        # Table header
+        table = "| Title | Summary |\n"
+        table += "|------|---------|\n"
+
+        # Add table rows
+        for article in articles:
+            title = f"[{article['title']}]({article['url']})"
+            #url = article['url']
+            summary = article['summary']
+            table += f"| {title} | {summary} |\n"
+
+        return table
+
+    def generate_markdown_list(articles):
+        markdown_list = ""
+
+        for article in articles:
+            title_link = f"[{article['title']}]({article['url']})"
+            summary = article['summary']
+            markdown_list += f"- {title_link}: {summary}\n\n"
+
+        return markdown_list
+
 class printHTML:
         def generate_html_table(articles):
             table = '<table border="1">\n'
@@ -65,7 +90,7 @@ class getSummary:
             input_variables=['text']
             )
          char_text_splitter = CharacterTextSplitter(
-            chunk_size = 1000,
+            chunk_size = 4096,
             chunk_overlap = 0
         )
          # we need to cast the data as a Document
@@ -75,7 +100,7 @@ class getSummary:
          docs = char_text_splitter.split_documents(doc)
          # we load the chain with ChatGPT
          llm = ChatOpenAI(model= "gpt-3.5-turbo", 
-                         openai_api_key="{Provide you key here}")
+                         openai_api_key="{provide your key here}")
          chain = load_summarize_chain(llm=llm,
                                      chain_type='map_reduce',
                                      combine_prompt=combine_prompt)
@@ -107,7 +132,7 @@ class extractNews:
     
         # Select top 10 news articles
         top_news_template = """
-                    extract from the following list the 10 most important news about machine learning.
+                    extract from the following list the unique 20 most important news about machine learning.
                     Return the answer cleaning up the text with no special characters etc. and no special encodings so that I can load in python lists.
 
                     For example: ['text 1', 'text 2', 'text 3']
@@ -168,12 +193,13 @@ class extractNews:
                 #print(f"Exception occured. {e.with_traceback}")
                 continue
 
-        print(top_news)
-        html_table = printHTML.generate_html_table(top_news)
-        print(html_table)
+        #print(top_news)
+        #html_table = printHTML.generate_html_table(top_news)
+        #print(html_table)
 
+        markdown_table = printMDTable.generate_markdown_list(top_news)
+        print(markdown_table)
 
-       
     
 
 if __name__ == '__main__':
