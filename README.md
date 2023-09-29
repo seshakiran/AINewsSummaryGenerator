@@ -1,2 +1,2 @@
 # AINewsSummaryGenerator
-Reads the NewsAPI for the artificial intelligence news and summarizes the top 10 using OpenAI
+Reads the NewsAPI for artificial intelligence news and summarizes the top 10 using OpenAI
